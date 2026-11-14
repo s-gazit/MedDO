@@ -1,0 +1,78 @@
+/* Design tokens — single source, from spec/DESIGN.md part 2 (Style Guide). */
+:root {
+  /* 60% · background and surfaces */
+  --c-ivory: #FAF8F3;
+  --c-white: #FFFFFF;
+  --c-line: #DCDDD9;
+  --c-field-border: #738283;
+  --c-stone-tint: #EFEBE0;
+  --c-navy-tint: #DAE4EE;
+
+  /* 30% · brand and text */
+  --c-navy: #163A5F;
+  --c-slate: #26383A;
+  --c-muted: #4A5C5E;
+
+  /* 10% · accents and status (Coral/Amber never used as text color) */
+  --c-coral: #E88D78;
+  --c-amber: #E8B06B;
+  --c-mint: #C7E4D8;
+  --c-teal: #15655C;
+  --c-teal-bg: #DCEDE9;
+  --c-error: #A8442F;
+  --c-error-bg: #FBE7E0;
+  --c-amber-ink: #8A5A1E;
+
+  /* Tints · zone and tag backgrounds */
+  --c-coral-zone: #FDEDE7;
+  --c-coral-tint: #FBDCD1;
+  --c-amber-zone: #FDF2E2;
+  --c-amber-tint: #FAE3C4;
+  --c-mint-zone: #EAF4F0;
+  --c-mint-tint: #D7EBE2;
+
+  /* Issue colors by computed state */
+  --c-issue-attention: #E88D78;
+  --c-issue-waiting: #E8B06B;
+  --c-issue-closed: #8C9A9B;
+
+  --c-disabled-bg: #E6E7E4;
+  --c-disabled-text: #6B7778;
+
+  /* Typography */
+  --font: "Heebo", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --fs-display: 32px; --lh-display: 40px;
+  --fs-h1: 26px; --lh-h1: 34px;
+  --fs-h2: 22px; --lh-h2: 30px;
+  --fs-h3: 18px; --lh-h3: 26px;
+  --fs-body: 16px; --lh-body: 26px;
+  --fs-label: 16px; --lh-label: 20px;
+  --fs-field: 14px; --lh-field: 20px;
+  --fs-small: 14px; --lh-small: 22px;
+
+  /* Radius */
+  --r-chip: 8px;
+  --r-control: 12px;
+  --r-card: 16px;
+  --r-zone: 18px;
+  --r-pill: 999px;
+
+  /* Shadows — navy tinted, never black */
+  --shadow-light: 0 1px 4px rgba(22, 58, 95, 0.08);
+  --shadow-medium: 0 2px 10px rgba(22, 58, 95, 0.10);
+  --shadow-high: 0 6px 20px rgba(22, 58, 95, 0.22);
+
+  /* Spacing (multiples of 4) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px;
+  --gutter: 16px;
+  --touch: 48px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --fs-display: 40px; --lh-display: 48px;
+    --fs-h1: 32px; --lh-h1: 40px;
+    --gutter: 32px;
+  }
+}

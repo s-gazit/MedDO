@@ -1,0 +1,9 @@
+{
+  "name": "meddo",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node --env-file=.env.local \"%APPDATA%/npm/node_modules/vercel/node_modules/@vercel/cli-support/dist/vc.js\" dev --listen 3000"
+  }
+}

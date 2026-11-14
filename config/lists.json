@@ -1,0 +1,25 @@
+{
+  "content_types": [
+    { "code": "result", "label": "תוצאה" },
+    { "code": "referral", "label": "הפניה" },
+    { "code": "visit_summary", "label": "סיכום ביקור" },
+    { "code": "prescription", "label": "מרשם" },
+    { "code": "receipt_invoice", "label": "קבלה או חשבונית" }
+  ],
+  "task_types": [
+    { "code": "appointment", "label": "תור" },
+    { "code": "test", "label": "בדיקה" },
+    { "code": "result", "label": "תוצאה" },
+    { "code": "medication", "label": "תרופה" },
+    { "code": "refund", "label": "החזר" }
+  ],
+  "task_statuses": [
+    { "code": "todo", "label": "לביצוע" },
+    { "code": "waiting", "label": "ממתין" },
+    { "code": "done", "label": "הושלם" }
+  ],
+  "issue_statuses": [
+    { "code": "open", "label": "פתוח" },
+    { "code": "closed", "label": "סגור" }
+  ]
+}
