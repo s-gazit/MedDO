@@ -21,6 +21,23 @@ export async function createIssue({ name, status, next_step }) {
   return row.id;
 }
 
+const ISSUE_COLS = 'id, name, status, next_step, created_at';
+
+export async function listIssuesFull() {
+  return check(await supabase.from('medical_issues').select(ISSUE_COLS).order('created_at'));
+}
+
+// One issue, or null when it does not exist (or the id is not a valid uuid).
+export async function getIssue(id) {
+  if (!isUuid(id)) return null;
+  return check(await supabase.from('medical_issues').select(ISSUE_COLS).eq('id', id).maybeSingle());
+}
+
+export async function updateIssue(id, { name, status, next_step }) {
+  check(await supabase.from('medical_issues')
+    .update({ name, status, next_step: next_step || null }).eq('id', id));
+}
+
 // ---------- documents ----------
 
 export async function createDocument(doc) {
@@ -28,11 +45,47 @@ export async function createDocument(doc) {
   return row.id;
 }
 
+export async function listIssueDocuments(issueId) {
+  return check(await supabase.from('documents')
+    .select('id, content_type, specialty, doc_date, provider, file_mime, created_at')
+    .eq('medical_issue_id', issueId)
+    .order('doc_date', { ascending: false, nullsFirst: false })
+    .order('created_at', { ascending: false }));
+}
+
+// One document with the name and status of its issue, or null.
+export async function getDocument(id) {
+  if (!isUuid(id)) return null;
+  return check(await supabase.from('documents')
+    .select('id, content_type, doc_date, file_path, file_mime, input_text, medical_issue_id, medical_issues(name, status)')
+    .eq('id', id).maybeSingle());
+}
+
 // ---------- tasks ----------
+
+const TASK_COLS = 'id, description, type, status, due_date, due_time, document_id, medical_issue_id';
 
 export async function createTasks(tasks) {
   if (!tasks.length) return;
   check(await supabase.from('tasks').insert(tasks));
+}
+
+// All "todo" and "waiting" tasks, by due date (no date last).
+export async function listOpenTasks() {
+  return check(await supabase.from('tasks').select(TASK_COLS)
+    .in('status', ['todo', 'waiting'])
+    .order('due_date', { ascending: true, nullsFirst: false }));
+}
+
+// All tasks of one issue, including done ones.
+export async function listIssueTasks(issueId) {
+  return check(await supabase.from('tasks').select(TASK_COLS)
+    .eq('medical_issue_id', issueId)
+    .order('due_date', { ascending: true, nullsFirst: false }));
+}
+
+function isUuid(id) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
 }
 
 // ---------- Storage ----------

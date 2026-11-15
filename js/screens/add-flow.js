@@ -7,6 +7,7 @@ import { signOut } from '../auth.js';
 import { icon } from '../icons.js';
 import { formatDate, formatTime, label, options, esc } from '../format.js';
 import { prepareFile } from '../image.js';
+import { typeTag, statusTag } from '../components.js';
 import { analyzeDocument } from '../ai-client.js';
 import {
   listIssues, createIssue, createDocument, createTasks, uploadFile, signedUrl, removeFile,
@@ -296,15 +297,6 @@ function issueRow(f) {
       </div>
       ${editing ? '' : `<button type="button" class="icon-btn" data-edit="issue" aria-label="${S.review.edit(S.review.issueFieldName)}">${icon('pencil')}</button>`}
     </div>`;
-}
-
-function typeTag(type) {
-  if (!type) return `<span class="tag tag-unknown">${S.review.unknown}</span>`;
-  return `<span class="tag tag-type-${type}">${icon(type)} ${label('task_types', type)}</span>`;
-}
-
-function statusTag(status) {
-  return `<span class="tag tag-status-${status}">${icon(status)} ${label('task_statuses', status)}</span>`;
 }
 
 function dueText(t) {

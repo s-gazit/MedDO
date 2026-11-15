@@ -28,3 +28,16 @@ export function esc(value) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+
+// '2026-11-12' -> '12.11'
+export function formatDayMonth(iso) {
+  if (!iso) return '';
+  const [, m, d] = iso.split('-');
+  return `${d}.${m}`;
+}
+
+// '2026-11-12' -> { day: '12', month: 'נוב׳' } for the date tile. Month names come from strings.js.
+export function dateTileParts(iso, monthNames) {
+  const [, m, d] = iso.split('-');
+  return { day: String(Number(d)), month: monthNames[Number(m) - 1] };
+}

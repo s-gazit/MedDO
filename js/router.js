@@ -9,24 +9,41 @@ import { renderDashboard } from './screens/dashboard.js';
 import { renderIssues } from './screens/issues.js';
 import { renderTasks } from './screens/tasks.js';
 import { renderAdd, leaveFlow } from './screens/add-flow.js';
-import { renderOriginalFromFlow } from './screens/document.js';
-import { renderIssueNew } from './screens/issue.js';
+import { renderOriginalFromFlow, renderDocument } from './screens/document.js';
+import { renderIssueNew, renderIssueEdit, renderIssue } from './screens/issue.js';
 
 const app = document.getElementById('app');
 
 // Screens that live inside the app shell, keyed by hash path.
+// sub: a screen with its own title and back arrow (no logo header on phones), e.g. the issue screen.
 const SHELL_ROUTES = {
   '/': { render: renderDashboard, nav: 'home' },
   '/issues': { render: renderIssues, nav: 'issues' },
   '/tasks': { render: renderTasks, nav: 'tasks' },
+  '/issue/:id': { render: renderIssue, nav: 'issues', sub: true },
 };
 
 // Screens with a title and back arrow, no navigation bar. They draw their frame with flowFrame().
+// Fixed paths are matched before patterns, so '/issue/new' never reaches '/issue/:id'.
 const FLOW_ROUTES = {
   '/add': renderAdd,
   '/add/original': renderOriginalFromFlow,
   '/issue/new': renderIssueNew,
+  '/issue/:id/edit': renderIssueEdit,
+  '/document/:id': renderDocument,
 };
+
+// Finds the entry for a path in a route table: exact match first, then ':id' patterns.
+function match(table, path) {
+  if (table[path]) return { entry: table[path], id: null };
+  for (const pattern of Object.keys(table)) {
+    if (!pattern.includes(':id')) continue;
+    const re = new RegExp('^' + pattern.replace(':id', '([^/]+)') + '$');
+    const m = path.match(re);
+    if (m) return { entry: table[pattern], id: decodeURIComponent(m[1]) };
+  }
+  return null;
+}
 
 // Paths that keep the add-info flow alive. Leaving them discards the flow (and its uploaded file).
 const ADD_FLOW_PATHS = ['/add', '/add/original', '/issue/new'];
@@ -37,10 +54,15 @@ const ICONS = {
   tasks: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
 };
 
-// The last app-shell screen, so back arrows of flow screens return there.
+// The last two app-shell screens, so back arrows return there:
+// flow screens go back to the last one; the issue screen goes back to the one before it.
 let lastShellPath = '/';
+let prevShellPath = '/';
 export function backPath() {
   return lastShellPath;
+}
+export function prevBackPath() {
+  return prevShellPath;
 }
 
 function parseHash() {
@@ -66,10 +88,10 @@ function navLinks(active) {
   });
 }
 
-function shell(active) {
+function shell(active, sub = false) {
   const links = navLinks(active);
   app.innerHTML = `
-    <header class="app-header">
+    <header class="app-header${sub ? ' app-header-sub' : ''}">
       <div class="app-header-inner">
         <a class="brand" href="#/"><img src="./assets/img/logo-mark.png" alt=""><span>${S.appName}</span></a>
         <nav class="top-nav" aria-label="${S.nav.label}">
@@ -121,19 +143,22 @@ async function route() {
   }
   if (!session) return go('/login');
 
-  const flowRender = FLOW_ROUTES[path];
-  if (flowRender) {
-    await flowRender(params);
+  const flow = match(FLOW_ROUTES, path);
+  if (flow) {
+    await flow.entry(params, flow.id);
     window.scrollTo(0, 0);
     return;
   }
 
-  const entry = SHELL_ROUTES[path];
-  if (!entry) return go('/');
-  lastShellPath = path;
-  const main = shell(entry.nav);
-  await entry.render(main);
+  const found = match(SHELL_ROUTES, path);
+  if (!found) return go('/');
+  if (path !== lastShellPath) {
+    prevShellPath = lastShellPath;
+    lastShellPath = path;
+  }
+  const main = shell(found.entry.nav, found.entry.sub);
   window.scrollTo(0, 0);
+  await found.entry.render(main, found.id);
 }
 
 export function startRouter() {

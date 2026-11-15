@@ -22,8 +22,57 @@ export const S = {
     error: 'לא הצלחנו להיכנס. כדאי לבדוק את האימייל והסיסמה ולנסות שוב.',
     missing: 'צריך למלא אימייל וסיסמה.',
   },
-  home: { title: 'שלום, הנה מה שדורש תשומת לב היום' },
-  issues: { title: 'נושאים' },
+  home: {
+    title: 'שלום, הנה מה שדורש תשומת לב היום',
+    greeting: (name) => `שלום ${name}, הנה מה שדורש תשומת לב היום`,
+    nowTitle: 'מה צריך לעשות עכשיו',
+    waitingTitle: 'מה ממתין',
+    laterTitle: 'בהמשך',
+    issuesTitle: 'בירורים רפואיים פתוחים',
+    allIssues: 'כל הנושאים',
+    nowEmpty: 'אין כרגע משימות דחופות. אפשר לנשום',
+    waitingEmpty: 'אין כרגע משימות שממתינות',
+    issuesEmpty: 'אין בירורים פתוחים',
+  },
+  issues: {
+    title: 'נושאים',
+    intro: 'כל הבעיות הרפואיות בתיק, עם הסטטוס והצעד הבא',
+    newIssue: 'בירור חדש',
+    empty: 'עדיין אין בירורים. אפשר לפתוח בירור חדש, או להוסיף מסמך ולפתוח אותו משם',
+  },
+
+  // Shared pieces of task rows and issue cards
+  common: {
+    loading: 'טוענים...',
+    tasksCount: (n) => (n === 1 ? 'משימה אחת' : `${n} משימות`),
+    nextStep: (text) => `הצעד הבא: ${text}`,
+    dueBy: (d) => `עד ${d}`,
+    noIssue: 'ללא שיוך',
+    openOriginal: (d) => `הצג את המסמך המקורי של: ${d}`,
+    stateAction: 'דורש טיפול',
+    stateWaiting: 'ממתין',
+    months: ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'],
+  },
+
+  // Screen 8 · medical issue
+  issue: {
+    edit: 'עריכה',
+    openedOn: (d) => `נפתח ${d}`,
+    nextStepTitle: 'הצעד הבא',
+    noNextStep: 'עוד לא נקבע צעד הבא',
+    addNextStep: 'להוסיף צעד הבא',
+    tasksTitle: 'משימות',
+    newTask: 'משימה חדשה',
+    noTasks: 'אין משימות בבירור הזה',
+    docsTitle: 'מסמכים',
+    filterLabel: 'סינון לפי סוג תוכן',
+    filterAll: 'הכל',
+    noDocs: 'עוד אין מסמכים בבירור הזה',
+    noDocsOfType: 'אין מסמכים מהסוג הזה',
+    untitledDoc: 'מסמך',
+    notFound: 'לא מצאנו את הבירור',
+    backToIssues: 'לכל הנושאים',
+  },
   tasks: { title: 'משימות ומעקבים' },
   loadError: 'משהו לא נטען כמו שצריך. כדאי לרענן את הדף.',
 
@@ -121,11 +170,13 @@ export const S = {
     imageAlt: 'המסמך שהועלה',
     openFile: 'פתיחת הקובץ',
     openFailed: 'לא הצלחנו לפתוח את הקובץ. אפשר לנסות שוב',
+    notFound: 'לא מצאנו את המסמך',
   },
 
   // Screen 11 · new issue
   issueForm: {
     title: 'בירור חדש',
+    editTitle: 'עריכת בירור',
     intro: 'בירור הוא בעיה רפואית אחת, שכל המסמכים והמשימות שלה נאספים תחתיה',
     name: 'שם',
     namePlaceholder: 'כאבי גב תחתון',
