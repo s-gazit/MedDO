@@ -51,6 +51,7 @@ export const S = {
     openOriginal: (d) => `הצג את המסמך המקורי של: ${d}`,
     stateAction: 'דורש טיפול',
     stateWaiting: 'ממתין',
+    overdue: 'באיחור',
     months: ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'],
   },
 
@@ -73,7 +74,67 @@ export const S = {
     notFound: 'לא מצאנו את הבירור',
     backToIssues: 'לכל הנושאים',
   },
-  tasks: { title: 'משימות ומעקבים' },
+  // Screens 9 and 14 · tasks and follow-ups
+  tasks: {
+    title: 'משימות ומעקבים',
+    newTask: 'משימה חדשה',
+    filterLabel: 'סינון לפי סטטוס',
+    filterAll: 'הכל',
+    empty: 'אין כאן משימות כרגע',
+    colType: 'סוג',
+    colDesc: 'תיאור',
+    colIssue: 'בעיה רפואית',
+    colDue: 'תאריך יעד',
+    colStatus: 'סטטוס',
+    colActions: 'פעולות',
+    noDate: 'בלי תאריך',
+  },
+
+  // Screen 10 · new task / edit task
+  taskForm: {
+    title: 'משימה חדשה',
+    editTitle: 'עריכת משימה',
+    desc: 'תיאור',
+    descPlaceholder: 'לקבוע תור',
+    type: 'סוג',
+    status: 'סטטוס',
+    due: 'תאריך יעד',
+    time: 'שעה (לתור)',
+    issue: 'שיוך לבעיה רפואית',
+    issueLocked: 'הבעיה נקבעת לפי המסמך שממנו נוצרה המשימה',
+    descRequired: 'צריך לכתוב מה המשימה',
+    typeRequired: 'צריך לבחור סוג',
+    dueRequired: 'צריך תאריך כדי לשמור',
+    saveFailed: 'לא הצלחנו לשמור. אפשר לנסות שוב',
+    delete: 'מחיקה',
+    deleteQuestion: 'למחוק את המשימה? אי אפשר לבטל את זה',
+    deleteFailed: 'לא הצלחנו למחוק. אפשר לנסות שוב',
+    notFound: 'לא מצאנו את המשימה',
+    toAllTasks: 'לכל המשימות',
+  },
+
+  // Status picker
+  taskStatus: {
+    title: 'שינוי סטטוס',
+    markDone: 'בוצע',
+    markDoneFor: (d) => `סימון כבוצע: ${d}`,
+    change: (d, current) => `שינוי סטטוס: ${d}. כרגע ${current}`,
+    needsDate: 'למשימה הזו עוד אין תאריך יעד. צריך תאריך כדי לשמור',
+  },
+
+  // Add to calendar
+  calendar: {
+    add: 'הוסף ליומן',
+    addFor: (d) => `הוסף ליומן: ${d}`,
+    question: 'להוסיף את התור ליומן?',
+    missingTime: 'חסרה שעה לתור. אחרי שנוסיף אותה, נפתח את היומן',
+    missingDateTime: 'חסרים תאריך ושעה לתור. אחרי שנוסיף אותם, נפתח את היומן',
+    open: 'פתיחת היומן',
+    timeRequired: 'צריך שעה כדי להוסיף ליומן',
+    dateRequired: 'צריך תאריך כדי להוסיף ליומן',
+    saveFailed: 'היומן נפתח, אבל לא הצלחנו לשמור את השעה במשימה. אפשר לנסות שוב',
+    details: 'נוצר ב-MedDo',
+  },
   loadError: 'משהו לא נטען כמו שצריך. כדאי לרענן את הדף.',
 
   // Screen 3 · add info

@@ -27,6 +27,8 @@ const PATHS = {
   waiting: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
   done: '<path d="M5 12l5 5 9-10"/>',
   new: '<path d="M12 5v14M5 12h14"/>',
+  overdue: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4"/><path d="M12 16.5h.01"/><path d="M9 2h6"/>',
+  calendar: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M12 13v4M10 15h4"/>',
 };
 
 export function icon(name, cls = '') {

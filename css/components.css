@@ -521,3 +521,82 @@ a.row-arrow:hover { color: var(--c-navy); }
 
 /* Saved document details line */
 .doc-details { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); color: var(--c-muted); font-size: var(--fs-small); }
+
+/* ---------- Milestone 5 · task management ---------- */
+
+/* The whole task row opens the edit form: the title link covers the row,
+   the status button, calendar button and document arrow sit above it. */
+.trow { position: relative; }
+.trow-edit { color: var(--c-navy); text-decoration: none; }
+.trow-edit::after { content: ""; position: absolute; inset: 0; border-radius: var(--r-card); }
+.trow-edit:hover { text-decoration: underline; }
+.trow-edit:focus-visible { outline: none; }
+.trow-edit:focus-visible::after { outline: 3px solid var(--c-navy); outline-offset: 2px; }
+.trow .tag-btn, .trow .cal-btn, .trow .row-arrow { position: relative; z-index: 1; }
+.trow-tags { align-items: center; }
+
+/* Status tag as a button */
+.tag-btn {
+  border: 1px solid transparent; font: inherit; font-size: var(--fs-small); font-weight: 700;
+  cursor: pointer; min-height: 32px;
+}
+.tag-btn:hover { border-color: currentColor; }
+.tag-btn:focus-visible { outline: 3px solid var(--c-navy); outline-offset: 2px; }
+
+/* Overdue tag: word and icon, error colors */
+.tag-overdue { background: var(--c-error-bg); color: var(--c-error); }
+
+/* Add to calendar */
+.cal-btn { min-height: 36px; padding: 0 var(--s-3); font-size: var(--fs-small); gap: var(--s-1); }
+.cal-btn .icon { width: 18px; height: 18px; }
+
+/* Danger text button (delete) */
+.btn-danger { color: var(--c-error); }
+
+/* Tasks screen */
+.tasks-filter { margin: var(--s-4) 0; }
+.tasks-content, .tasks-groups { display: flex; flex-direction: column; gap: var(--s-4); }
+.table-wrap { background: var(--c-white); border-radius: var(--r-card); box-shadow: var(--shadow-light); overflow-x: auto; }
+.task-table { width: 100%; border-collapse: collapse; }
+.task-table th {
+  text-align: start; font-size: var(--fs-field); line-height: var(--lh-field); font-weight: 600;
+  color: var(--c-muted); padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--c-line);
+}
+.task-table td { padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--c-line); vertical-align: middle; }
+.task-table tr:last-child td { border-bottom: none; }
+.ttr { position: relative; }
+.ttr:hover { background: var(--c-ivory); }
+.ttr .trow-edit::after { border-radius: 0; }
+.ttr .tag-btn, .ttr .cal-btn, .ttr .row-arrow { position: relative; z-index: 1; }
+.cell-muted { color: var(--c-muted); font-size: var(--fs-small); }
+.cell-due { white-space: nowrap; }
+.cell-due .tag { margin-inline-start: var(--s-1); }
+.cell-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--s-2); }
+.cal-btn { white-space: nowrap; }
+
+/* Dialogs */
+.dialog {
+  border: none; border-radius: var(--r-card); padding: var(--s-5, 20px);
+  width: min(400px, calc(100vw - 32px)); background: var(--c-white); color: var(--c-slate);
+  box-shadow: 0 8px 28px rgba(22, 58, 95, .22);
+}
+.dialog::backdrop { background: rgba(22, 58, 95, .35); }
+.dialog form { display: flex; flex-direction: column; gap: var(--s-3); }
+.dialog h2 { color: var(--c-navy); }
+.dialog .field { margin-bottom: 0; }
+.dialog-actions { display: flex; gap: var(--s-2); margin-top: var(--s-2); }
+.dialog-actions .btn { flex: 1; }
+.choices { border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.choice {
+  display: flex; align-items: center; gap: var(--s-3); min-height: var(--touch);
+  padding: 0 var(--s-3); border: 1px solid var(--c-line); border-radius: var(--r-control); cursor: pointer;
+}
+.choice:has(input:checked) { border-color: var(--c-navy); background: var(--c-mint-zone); }
+.choice input { width: 20px; height: 20px; accent-color: var(--c-navy); }
+.dlg-date[hidden] { display: none; }
+.title-row .btn { white-space: nowrap; flex: none; }
+
+/* Quick "done" button on the home screen */
+.tag-done-btn { background: var(--c-white); color: var(--c-teal); border-color: var(--c-teal); }
+.tag-done-btn:hover { background: var(--c-teal-bg); }
+.trow .tag-done-btn { position: relative; z-index: 1; }

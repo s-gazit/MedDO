@@ -60,8 +60,17 @@ export function openTaskTypes(issueId, tasks, typeOrder) {
   return typeOrder.filter((code) => types.has(code));
 }
 
-// Tasks of one issue for the issue screen: todo, then waiting, then done; by due date inside each.
+// Task lists (issue screen, tasks screen): todo, then waiting, then done.
+// todo and waiting by due date (soonest first); done by due date newest first, so recent ones are on top.
 export function sortIssueTasks(tasks) {
   const rank = { todo: 0, waiting: 1, done: 2 };
-  return [...tasks].sort((a, b) => (rank[a.status] - rank[b.status]) || byDueDate(a, b));
+  return [...tasks].sort((a, b) => (rank[a.status] - rank[b.status])
+    || (a.status === 'done' ? byDueDateDesc(a, b) : byDueDate(a, b)));
+}
+
+function byDueDateDesc(a, b) {
+  if (a.due_date === b.due_date) return 0;
+  if (!a.due_date) return 1; // no date last
+  if (!b.due_date) return -1;
+  return a.due_date > b.due_date ? -1 : 1;
 }

@@ -7,6 +7,8 @@ import { caseInfo } from '../main.js';
 import { listOpenTasks, listIssuesFull } from '../data.js';
 import { splitDashboard, issueState } from '../case-state.js';
 import { taskRow, issueCard, zoneHead } from '../components.js';
+import { bindTaskActions } from '../task-actions.js';
+import { reload } from '../router.js';
 
 export async function renderDashboard(main) {
   const name = caseInfo?.manager_name?.trim();
@@ -30,7 +32,7 @@ export async function renderDashboard(main) {
   const { now, later, waiting } = splitDashboard(tasks);
   const openIssues = issues.filter((i) => i.status === 'open').reverse();
 
-  const list = (rows, variant) => `<ul class="trow-list">${rows.map((t) => taskRow(t, variant, issueInfo)).join('')}</ul>`;
+  const list = (rows, variant) => `<ul class="trow-list">${rows.map((t) => taskRow(t, variant, issueInfo, { quickDone: true })).join('')}</ul>`;
   const empty = (text) => `<p class="zone-empty">${text}</p>`;
 
   content.innerHTML = `
@@ -62,6 +64,8 @@ export async function renderDashboard(main) {
         ? `<div class="issue-grid">${openIssues.map((i) => issueCard(i, issueInfo.get(i.id).state)).join('')}</div>`
         : empty(S.home.issuesEmpty)}
     </section>`;
+
+  bindTaskActions(content, tasks, reload);
 
   const toggle = content.querySelector('.later-toggle');
   toggle?.addEventListener('click', () => {

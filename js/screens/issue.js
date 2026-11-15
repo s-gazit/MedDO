@@ -4,7 +4,8 @@
 //                     to the table only on "approve and save". Opened on its own (from "Topics") it is saved now.
 // - #/issue/:id/edit  the same form in edit mode: name, status (open/closed) and next step.
 import { S } from '../strings.js';
-import { go, flowFrame, backPath, prevBackPath } from '../router.js';
+import { go, flowFrame, backPath, prevBackPath, reload } from '../router.js';
+import { bindTaskActions } from '../task-actions.js';
 import { icon } from '../icons.js';
 import { options, label, esc, formatDate } from '../format.js';
 import { createIssue, updateIssue, getIssue, listIssueTasks, listIssueDocuments } from '../data.js';
@@ -92,6 +93,8 @@ export async function renderIssue(main, id) {
     const prev = prevBackPath();
     go(prev.startsWith('/issue/') ? '/issues' : prev);
   });
+
+  bindTaskActions(main, tasks, reload);
 
   const wrap = main.querySelector('.doc-list-wrap');
   if (!wrap) return;

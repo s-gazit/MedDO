@@ -1,5 +1,11 @@
 // Display helpers: dates and labels from config/lists.json.
 import { lists } from './main.js';
+import { todayISO } from './case-state.js';
+
+// Overdue: a "todo" or "waiting" task whose due date is before today. Computed, never stored.
+export function isOverdue(task, today = todayISO()) {
+  return (task.status === 'todo' || task.status === 'waiting') && !!task.due_date && task.due_date < today;
+}
 
 // '2026-10-12' -> '12.10.2026'
 export function formatDate(iso) {

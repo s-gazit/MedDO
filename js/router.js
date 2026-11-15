@@ -11,6 +11,7 @@ import { renderTasks } from './screens/tasks.js';
 import { renderAdd, leaveFlow } from './screens/add-flow.js';
 import { renderOriginalFromFlow, renderDocument } from './screens/document.js';
 import { renderIssueNew, renderIssueEdit, renderIssue } from './screens/issue.js';
+import { renderTaskForm } from './screens/task-form.js';
 
 const app = document.getElementById('app');
 
@@ -31,6 +32,8 @@ const FLOW_ROUTES = {
   '/issue/new': renderIssueNew,
   '/issue/:id/edit': renderIssueEdit,
   '/document/:id': renderDocument,
+  '/task/new': (params) => renderTaskForm(params, null),
+  '/task/:id': renderTaskForm,
 };
 
 // Finds the entry for a path in a route table: exact match first, then ':id' patterns.
@@ -159,6 +162,13 @@ async function route() {
   const main = shell(found.entry.nav, found.entry.sub);
   window.scrollTo(0, 0);
   await found.entry.render(main, found.id);
+}
+
+// Redraws the current screen in place (after a status change), keeping the scroll position.
+export async function reload() {
+  const y = window.scrollY;
+  await route();
+  window.scrollTo(0, y);
 }
 
 export function startRouter() {

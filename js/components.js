@@ -2,7 +2,7 @@
 // Every status or state is shown with a word and an icon, never by color alone.
 import { S } from './strings.js';
 import { icon } from './icons.js';
-import { label, esc, formatDate, formatDayMonth, formatTime, dateTileParts } from './format.js';
+import { label, esc, formatDate, formatDayMonth, formatTime, dateTileParts, isOverdue } from './format.js';
 
 export function typeTag(type) {
   if (!type) return `<span class="tag tag-unknown">${S.review.unknown}</span>`;
@@ -11,6 +11,30 @@ export function typeTag(type) {
 
 export function statusTag(status) {
   return `<span class="tag tag-status-${status}">${icon(status)} ${label('task_statuses', status)}</span>`;
+}
+
+// Status tag as a button: opens the status picker (task-actions.js).
+export function statusButton(t) {
+  return `<button type="button" class="tag tag-status-${t.status} tag-btn" data-status-task="${t.id}"
+    aria-label="${esc(S.taskStatus.change(t.description, label('task_statuses', t.status)))}">${icon(t.status)} ${label('task_statuses', t.status)}</button>`;
+}
+
+// Quick "mark as done" button for open tasks on the home screen (task-actions.js).
+export function doneButton(t) {
+  return `<button type="button" class="tag tag-btn tag-done-btn" data-done-task="${t.id}"
+    aria-label="${esc(S.taskStatus.markDoneFor(t.description))}">${icon('done')} ${S.taskStatus.markDone}</button>`;
+}
+
+// "Overdue" tag (word and icon), or nothing.
+export function overdueTag(t) {
+  return isOverdue(t) ? `<span class="tag tag-overdue">${icon('overdue')} ${S.common.overdue}</span>` : '';
+}
+
+// "Add to calendar" soft button, only for appointments. Always enabled (a missing time opens a dialog).
+export function calendarButton(t) {
+  if (t.type !== 'appointment') return '';
+  return `<button type="button" class="btn btn-soft btn-small cal-btn" data-cal-task="${t.id}"
+    aria-label="${esc(S.calendar.addFor(t.description))}">${icon('calendar')} ${S.calendar.add}</button>`;
 }
 
 // Computed issue state tag: 'action' (needs attention) or 'waiting'. Closed issues show issueStatusTag.
@@ -30,13 +54,13 @@ export function issueDot(state) {
 }
 
 // "dot · issue name" for a task row. issueInfo: Map id -> { name, state }.
-function issueLabel(task, issueInfo) {
+export function issueLabel(task, issueInfo) {
   const info = task.medical_issue_id && issueInfo.get(task.medical_issue_id);
   if (!info) return `<span>${S.common.noIssue}</span>`;
   return `<span class="issue-ref">${issueDot(info.state)}${esc(info.name)}</span>`;
 }
 
-function dueText(t) {
+export function dueText(t) {
   if (!t.due_date) return '';
   const time = t.type === 'appointment' && t.due_time ? `, ${formatTime(t.due_time)}` : '';
   // Keep "17.11, 09:30" in left-to-right order inside the Hebrew line.
@@ -44,7 +68,7 @@ function dueText(t) {
 }
 
 // Arrow to the original document. Only for a task created from a document.
-function docArrow(t) {
+export function docArrow(t) {
   if (!t.document_id) return '';
   return `<a class="icon-btn row-arrow" href="#/document/${t.document_id}"
     aria-label="${esc(S.common.openOriginal(t.description))}">${icon('chevron')}</a>`;
@@ -61,32 +85,40 @@ function typeTile(type) {
 
 const sep = '<span aria-hidden="true">·</span>';
 
-// Task row. variant: 'now' (also used for "later"), 'waiting' or 'issue'.
-export function taskRow(t, variant, issueInfo = new Map()) {
+// Task row. variant: 'now' (also used for "later"), 'waiting', 'issue' or 'list' (tasks screen, phone).
+// The title is a link to the edit form that covers the whole row; the buttons and the arrow sit above it.
+// opts.quickDone adds the "mark as done" button (home screen).
+export function taskRow(t, variant, issueInfo = new Map(), opts = {}) {
   let lead;
   let meta;
-  let tags = '';
+  let tags = overdueTag(t);
   if (variant === 'now') {
     lead = dateTile(t.due_date);
     meta = `${issueLabel(t, issueInfo)} ${sep} <span>${label('task_types', t.type)}</span>
       <span class="visually-hidden">${S.common.dueBy(formatDate(t.due_date))}</span>`;
-    tags = `<span class="desktop-tag">${statusTag(t.status)}</span>`;
+    tags += `<span class="desktop-tag">${statusButton(t)}</span>`;
   } else if (variant === 'waiting') {
     lead = typeTile(t.type);
     const due = dueText(t);
     meta = `${issueLabel(t, issueInfo)}${due ? ` ${sep} <span>${due}</span>` : ''}`;
-    tags = statusTag(t.status);
+    tags += statusButton(t);
+  } else if (variant === 'list') {
+    lead = typeTile(t.type);
+    const due = dueText(t);
+    meta = `${due ? `<span>${due}</span> ${sep} ` : ''}${issueLabel(t, issueInfo)}`;
+    tags = typeTag(t.type) + tags + statusButton(t) + calendarButton(t);
   } else {
     lead = typeTile(t.type);
     const due = dueText(t);
     meta = `${due ? `<span>${due}</span>` : ''} ${typeTag(t.type)}`;
-    tags = statusTag(t.status);
+    tags += statusButton(t);
   }
+  if (opts.quickDone) tags += doneButton(t);
   return `
     <li class="trow">
       ${lead}
       <div class="trow-body">
-        <span class="trow-title">${esc(t.description)}</span>
+        <a class="trow-title trow-edit" href="#/task/${t.id}">${esc(t.description)}</a>
         <span class="trow-meta">${meta}</span>
       </div>
       <div class="trow-tags">${tags}</div>

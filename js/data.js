@@ -84,6 +84,30 @@ export async function listIssueTasks(issueId) {
     .order('due_date', { ascending: true, nullsFirst: false }));
 }
 
+// Every task, including done ones, by due date (no date last).
+export async function listAllTasks() {
+  return check(await supabase.from('tasks').select(TASK_COLS)
+    .order('due_date', { ascending: true, nullsFirst: false }));
+}
+
+// One task, or null when it does not exist (or the id is not a valid uuid).
+export async function getTask(id) {
+  if (!isUuid(id)) return null;
+  return check(await supabase.from('tasks').select(TASK_COLS).eq('id', id).maybeSingle());
+}
+
+export async function createTask(task) {
+  check(await supabase.from('tasks').insert(task));
+}
+
+export async function updateTask(id, changes) {
+  check(await supabase.from('tasks').update(changes).eq('id', id));
+}
+
+export async function deleteTask(id) {
+  check(await supabase.from('tasks').delete().eq('id', id));
+}
+
 function isUuid(id) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
 }
