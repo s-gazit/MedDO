@@ -795,3 +795,8 @@ https://calendar.google.com/calendar/render?action=TEMPLATE
 **הקשר:** סעיף 7.1 קובע `vercel dev`, עם `GEMINI_API_KEY` בקובץ `.env.local`. בבדיקה התברר ש-`vercel dev` לא קורא את `.env.local` (רק את `.env`, או את המשתנים ששמורים ב-Vercel). בנוסף, הגרסה המקומפלת (native) של Vercel CLI ב-Windows נכשלת ב-`vercel dev` (`MODULE_NOT_FOUND`), וגם דורשת Developer Mode של Windows כדי ליצור קיצורי דרך.
 **החלטה:** `package.json` מגדיר `npm run dev`, שמריץ את גרסת ה-JavaScript של אותו Vercel CLI עם `node --env-file=.env.local`. כך המפתח הסודי נשאר רק ב-`.env.local`, והמשתנים הלא-סודיים מגיעים מ-Vercel (סביבת Development), כמו בסעיף 7.1. Developer Mode של Windows מופעל במחשב.
 **השלכות:** הפקודה מניחה ש-Vercel CLI מותקן גלובלית ב-npm במחשב Windows (`%APPDATA%/npm`). בעדכון גרסה של Vercel CLI צריך לוודא שהנתיב עדיין קיים. באתר החי אין שינוי.
+
+### ADR-5: המודל הוא `gemini-3.5-flash-lite` במקום `gemini-3.8-flash`
+**הקשר:** סעיף 4.3 בחר ב-`gemini-3.8-flash`. בבדיקות של Milestone 1 (14–15.11.2026) המודל החזיר שוב ושוב 503 ("high demand") או לא ענה תוך 60 שניות, גם בבקשה מינימלית, במשך כחצי יום. `gemini-3.5-flash-lite` ענה עם אותו מפתח תוך 2–3 שניות, והחזיר פלט תקין במבנה הקבוע. נשקלה גם החלפה ל-OpenAI, ונדחתה: היא חורגת מכללי הסטאק (סעיף 8), כרוכה בתשלום לכל קריאה, ומודל אחר של Gemini פותר את הבעיה.
+**החלטה (הכרעה של שני, 15.11):** `MODEL = "gemini-3.5-flash-lite"` ב-`lib/config.js`. שאר הקוד לא משתנה.
+**השלכות:** סעיף 4.3 ציין ש-flash-lite חלש יותר בצילומים בעברית. שלב 0 (Milestone 2) בודק את זה מול הרף. אם הוא לא עומד ברף, בודקים שוב את `gemini-3.8-flash` (אם הוא זמין), ורק אחר כך שוקלים חריגה מהסטאק לפי סעיף 8.4.
