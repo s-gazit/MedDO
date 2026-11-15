@@ -1,5 +1,5 @@
 // The single serverless function: POST /api/ask
-// CORS -> method -> auth (Supabase session) -> input validation -> file read -> Gemini -> structure check -> JSON.
+// CORS -> method -> auth (Supabase session) -> input validation -> file read -> Gemini -> checks and dates -> JSON.
 // Always answers JSON. Logs only error codes and statuses, never document content.
 import {
   MAX_FILE_BYTES, MAX_TEXT_CHARS, MAX_ISSUES, MAX_ISSUE_NAME, ALLOWED_MIME, STORAGE_BUCKET,
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
     const raw = await extract(doc, input.issues);
 
     // 7. Structure check
-    const data = validateOutput(raw);
+    const data = validateOutput(raw, input.issues);
     if (!data) return fail(res, 'unreadable');
 
     // 8. Answer

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>MedDo · בדיקת AI</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    main { max-width: 900px; margin: 0 auto; padding: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 15px; }
+    th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: start; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .ok { color: #1f6b4a; } .bad { color: #a03030; }
+  </style>
+  <script type="module" src="./ai-tests.js"></script>
+</head>
+<body>
+  <main>
+    <h1>בדיקת ה-AI (שלב 0)</h1>
+    <p>כלי פיתוח. מריץ את מסמכי הבדיקה מהתיקייה <code>ai-tests/</code> דרך הפונקציה, באותו מסלול שהאתר משתמש בו.</p>
+
+    <form id="login" class="card" hidden novalidate>
+      <div class="form-error" role="alert" hidden></div>
+      <div class="field"><label for="email">אימייל</label><input class="input" id="email" type="email" dir="ltr" autocomplete="username"></div>
+      <div class="field"><label for="password">סיסמה</label><input class="input" id="password" type="password" dir="ltr" autocomplete="current-password"></div>
+      <button class="btn btn-primary" type="submit">כניסה</button>
+    </form>
+
+    <section id="runner" hidden>
+      <div class="actions">
+        <button class="btn btn-primary" id="run">הרצה על כל המסמכים</button>
+        <button class="btn btn-secondary" id="download" disabled>הורדת התוצאות</button>
+      </div>
+      <p id="status" aria-live="polite"></p>
+      <table>
+        <thead><tr><th>מסמך</th><th>תוצאה</th><th>זמן</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
