@@ -117,6 +117,7 @@ export const S = {
   taskStatus: {
     title: 'שינוי סטטוס',
     markDone: 'בוצע',
+    notDone: 'לא בוצע',
     markDoneFor: (d) => `סימון כבוצע: ${d}`,
     change: (d, current) => `שינוי סטטוס: ${d}. כרגע ${current}`,
     needsDate: 'למשימה הזו עוד אין תאריך יעד. צריך תאריך כדי לשמור',

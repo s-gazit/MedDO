@@ -7,6 +7,8 @@ import { S } from './strings.js';
 
 export function bindTaskActions(container, tasks, refresh) {
   const byId = new Map(tasks.map((t) => [t.id, t]));
+  const prevStatus = new Map(); // task id -> status before the quick "done" switch
+  const dated = new Set(); // tasks that got a due date from the picker on this screen
 
   container.addEventListener('click', async (e) => {
     const statusBtn = e.target.closest('[data-status-task]');
@@ -23,19 +25,32 @@ export function bindTaskActions(container, tasks, refresh) {
     if (doneBtn) {
       const task = byId.get(doneBtn.dataset.doneTask);
       if (!task) return;
-      if (!task.due_date) {
+      // A done task stays on screen, struck through, until the user leaves the screen.
+      // Turning the switch off again restores the status the task had before.
+      const setOn = (on) => {
+        doneBtn.setAttribute('aria-checked', String(on));
+        const lbl = doneBtn.querySelector('.sw-label');
+        if (lbl) lbl.textContent = on ? S.taskStatus.markDone : S.taskStatus.notDone;
+        doneBtn.closest('.trow')?.classList.toggle('is-done', on);
+      };
+      const turnOn = doneBtn.getAttribute('aria-checked') !== 'true';
+      if (!prevStatus.has(task.id)) prevStatus.set(task.id, task.status);
+
+      // No due date yet: the status picker asks for one and saves "done" itself.
+      if (turnOn && !task.due_date && !dated.has(task.id)) {
         const saved = await statusDialog(task, (changes) => updateTask(task.id, changes), 'done');
-        if (saved) refresh();
+        if (saved) { dated.add(task.id); setOn(true); }
         return;
       }
       doneBtn.disabled = true;
+      setOn(turnOn);
       try {
-        await updateTask(task.id, { status: 'done' });
-        refresh();
+        await updateTask(task.id, { status: turnOn ? 'done' : prevStatus.get(task.id) });
       } catch {
-        doneBtn.disabled = false;
+        setOn(!turnOn);
         alert(S.taskForm.saveFailed);
       }
+      doneBtn.disabled = false;
       return;
     }
 

@@ -19,10 +19,14 @@ export function statusButton(t) {
     aria-label="${esc(S.taskStatus.change(t.description, label('task_statuses', t.status)))}">${icon(t.status)} ${label('task_statuses', t.status)}</button>`;
 }
 
-// Quick "mark as done" button for open tasks on the home screen (task-actions.js).
-export function doneButton(t) {
-  return `<button type="button" class="tag tag-btn tag-done-btn" data-done-task="${t.id}"
-    aria-label="${esc(S.taskStatus.markDoneFor(t.description))}">${icon('done')} ${S.taskStatus.markDone}</button>`;
+// Quick "mark as done" on/off switch for open tasks on the home screen (task-actions.js).
+// Off (light) = not done; turning it on (dark teal with a check) marks the task as done.
+export function doneSwitch(t) {
+  return `<button type="button" class="done-switch" role="switch" aria-checked="false" data-done-task="${t.id}"
+    aria-label="${esc(S.taskStatus.markDoneFor(t.description))}">
+      <span class="sw-track" aria-hidden="true"><span class="sw-knob">${icon('done')}</span></span>
+      <span class="sw-label" aria-hidden="true">${S.taskStatus.notDone}</span>
+    </button>`;
 }
 
 // "Overdue" tag (word and icon), or nothing.
@@ -113,15 +117,15 @@ export function taskRow(t, variant, issueInfo = new Map(), opts = {}) {
     meta = `${due ? `<span>${due}</span>` : ''} ${typeTag(t.type)}`;
     tags += statusButton(t);
   }
-  if (opts.quickDone) tags += doneButton(t);
   return `
-    <li class="trow">
+    <li class="trow${opts.quickDone ? ' has-switch' : ''}">
       ${lead}
       <div class="trow-body">
         <a class="trow-title trow-edit" href="#/task/${t.id}">${esc(t.description)}</a>
         <span class="trow-meta">${meta}</span>
       </div>
       <div class="trow-tags">${tags}</div>
+      ${opts.quickDone ? doneSwitch(t) : ''}
       ${docArrow(t)}
     </li>`;
 }

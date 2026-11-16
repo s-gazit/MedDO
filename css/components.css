@@ -596,7 +596,37 @@ a.row-arrow:hover { color: var(--c-navy); }
 .dlg-date[hidden] { display: none; }
 .title-row .btn { white-space: nowrap; flex: none; }
 
-/* Quick "done" button on the home screen */
-.tag-done-btn { background: var(--c-white); color: var(--c-teal); border-color: var(--c-teal); }
-.tag-done-btn:hover { background: var(--c-teal-bg); }
-.trow .tag-done-btn { position: relative; z-index: 1; }
+/* Quick "done" on/off switch on the home screen: light = not done, dark teal = done */
+.trow.has-switch { grid-template-columns: auto minmax(0, 1fr) auto auto; column-gap: var(--s-2); }
+.trow.has-switch > .date-tile { margin-inline-end: var(--s-1); }
+.trow.has-switch > .row-arrow { width: 32px; }
+.trow.has-switch > .done-switch { grid-column: 3; grid-row: 1 / span 2; align-self: center; }
+.trow.has-switch > .row-arrow { grid-column: 4; }
+@media (min-width: 768px) {
+  .trow.has-switch { grid-template-columns: auto minmax(0, 1fr) auto auto auto; }
+  .trow.has-switch > .done-switch { grid-column: 4; }
+  .trow.has-switch > .row-arrow { grid-column: 5; }
+}
+.done-switch {
+  position: relative; z-index: 1;
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+  min-width: var(--touch); padding: 2px; border: 0; background: none; cursor: pointer; font: inherit;
+}
+.sw-track {
+  position: relative; display: block; width: 52px; height: 30px; border-radius: var(--r-pill);
+  background: #E3E8E6; border: 1.5px solid #B9C6C2; transition: background .25s, border-color .25s;
+}
+.sw-knob {
+  position: absolute; top: 2px; inset-inline-start: 2px; width: 23px; height: 23px; border-radius: 50%;
+  background: var(--c-white); box-shadow: 0 1px 4px rgba(22, 58, 95, 0.25);
+  display: grid; place-items: center; color: transparent; transition: inset-inline-start .25s, color .25s;
+}
+.sw-knob .icon { width: 14px; height: 14px; }
+.sw-label { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--c-muted); white-space: nowrap; }
+.done-switch[aria-checked="true"] .sw-track { background: var(--c-teal); border-color: var(--c-teal); }
+.done-switch[aria-checked="true"] .sw-knob { inset-inline-start: 24px; color: var(--c-teal); }
+.done-switch[aria-checked="true"] .sw-label { color: var(--c-teal); }
+.done-switch:hover .sw-track { border-color: var(--c-teal); }
+.done-switch:focus-visible { outline: 3px solid var(--c-navy); outline-offset: 2px; border-radius: var(--r-control); }
+/* Done: the row stays on screen, struck through, until the user leaves the screen. */
+.trow.is-done .trow-title { text-decoration: line-through; color: var(--c-muted); }
