@@ -1,7 +1,7 @@
 /* Design tokens — single source, from spec/DESIGN.md part 2 (Style Guide). */
 :root {
   /* 60% · background and surfaces */
-  --c-ivory: #FAF8F3;
+  --c-bg: #F5F6F7; /* Porcelain — main app background */
   --c-white: #FFFFFF;
   --c-line: #DCDDD9;
   --c-field-border: #738283;
